@@ -4,8 +4,28 @@
  */
 'use strict';
 
-import { getElementClientOffset, getEventClientOffset } from 'react-dnd/modules/utils/OffsetHelpers';
 import invariant from 'invariant';
+
+function getEventClientOffset(e) {
+  return {
+    x: e.clientX,
+    y: e.clientY
+  };
+}
+
+const ELEMENT_NODE = 1;
+function getNodeClientOffset(node) {
+  const el = node.nodeType === ELEMENT_NODE ?
+    node :
+    node.parentElement;
+
+  if (!el) {
+    return null;
+  }
+
+  const { top, left } = el.getBoundingClientRect();
+  return { x: left, y: top };
+}
 
 export class TouchBackend {
     constructor (manager) {
@@ -89,7 +109,7 @@ export class TouchBackend {
     }
 
     getSourceClientOffset (sourceId) {
-        return getElementClientOffset(this.sourceNodes[sourceId]);
+        return getNodeClientOffset(this.sourceNodes[sourceId]);
     }
 
     handleTopTouchStartCapture (e) {
