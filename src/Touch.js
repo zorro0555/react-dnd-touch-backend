@@ -6,25 +6,25 @@
 
 import invariant from 'invariant';
 
-function getEventClientOffset(e) {
-  return {
-    x: e.clientX,
-    y: e.clientY
-  };
+function getEventClientOffset (e) {
+    return {
+        x: e.clientX,
+        y: e.clientY
+    };
 }
 
 const ELEMENT_NODE = 1;
-function getNodeClientOffset(node) {
-  const el = node.nodeType === ELEMENT_NODE ?
-    node :
-    node.parentElement;
+function getNodeClientOffset (node) {
+    const el = node.nodeType === ELEMENT_NODE
+        ? node
+        : node.parentElement;
 
-  if (!el) {
-    return null;
-  }
+    if (!el) {
+        return null;
+    }
 
-  const { top, left } = el.getBoundingClientRect();
-  return { x: left, y: top };
+    const { top, left } = el.getBoundingClientRect();
+    return { x: left, y: top };
 }
 
 export class TouchBackend {
