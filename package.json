@@ -1,6 +1,6 @@
 {
   "name": "react-dnd-touch-backend",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Touch backend for react-dnd",
   "main": "dist/Touch.js",
   "scripts": {
@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/yahoo/react-dnd-touch-backend#readme",
   "dependencies": {
-    "react-dnd": "^1.1.8",
+    "react-dnd": "^2.0.0",
     "invariant": "^2.1.1"
   },
   "devDependencies": {
@@ -41,7 +41,9 @@
     "gulp-eslint": "^1.0.0",
     "gulp-util": "^3.0.6",
     "immutable": "^3.7.5",
-    "react": "^0.13.3",
+    "react": "^0.14.0",
+    "react-addons-pure-render-mixin": "^0.14.0",
+    "react-dom": "^0.14.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.4.0"
   }

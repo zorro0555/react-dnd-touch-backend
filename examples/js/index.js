@@ -4,11 +4,12 @@
  */
 'use strict';
 
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import DraggableItem from './DraggableItem.jsx';
 import { default as ItemPreview } from './ItemPreview.jsx';
 import { default as Touch } from '../../src/Touch';
-import DragDropContext from 'react-dnd/modules/DragDropContext';
+import DragDropContext from 'react-dnd/lib/DragDropContext';
 import { List } from 'immutable';
 
 let initialData = [];
@@ -73,7 +74,7 @@ class Items extends React.Component {
 const SortableList = DragDropContext(Touch)(Items);
 
 function render (data = initialData) {
-    React.render(<SortableList data={data}/>, document.getElementById('main'));
+    ReactDOM.render(<SortableList data={data}/>, document.getElementById('main'));
 }
 
 render();

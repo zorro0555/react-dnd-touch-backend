@@ -4,10 +4,10 @@
  */
 'use strict';
 
-import React from 'react/addons';
-const PureRenderMixin = React.addons.PureRenderMixin;
+import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
-import DragLayer from 'react-dnd/modules/DragLayer';
+import DragLayer from 'react-dnd/lib/DragLayer';
 
 function collect (monitor) {
     var item = monitor.getItem();

@@ -4,9 +4,9 @@
  */
 'use strict';
 
-import React from 'react/addons';
-import DragSource from 'react-dnd/modules/DragSource';
-import DropTarget from 'react-dnd/modules/DropTarget';
+import React from 'react';
+import DragSource from 'react-dnd/lib/DragSource';
+import DropTarget from 'react-dnd/lib/DropTarget';
 
 import classnames from 'classnames';
 
