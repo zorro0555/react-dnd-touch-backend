@@ -6,75 +6,66 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import DraggableItem from './DraggableItem.jsx';
-import { default as ItemPreview } from './ItemPreview.jsx';
+import SortableList from './SortableList.jsx';
+import Immutable from 'immutable';
 import { default as Touch } from '../../src/Touch';
 import DragDropContext from 'react-dnd/lib/DragDropContext';
-import { List } from 'immutable';
+import { default as ItemPreview } from './ItemPreview.jsx';
 
-let initialData = [];
+let initialData1 = [];
+let initialData2 = [];
 let i = 0;
 for (; i < 10; i++) {
-    initialData.push(i);
-}
-initialData = new List(initialData);
-
-function reorder (data, dragId, dropId) {
-    console.log(`Dragged ${dragId} to ${dropId}`);
-
-    var order = data.toArray();
-    var dragIndex;
-    var dropIndex;
-    // If drag & drop target is the same of we don't have either on the list,
-    // bounce
-    if (
-        dragId === dropId ||
-        (dragIndex = order.indexOf(dragId)) < 0 ||
-        (dropIndex = order.indexOf(dropId)) < 0
-    ) {
-        return;
-    }
-
-    // Remove dragId from array
-    order.splice(dragIndex, 1);
-
-    // Insert dragId in new location
-    order.splice(dropIndex, 0, dragId);
-    render(new List(order));
+    initialData1.push({
+        id: i,
+        name: `Item-${i}`
+    });
+    initialData2.push({
+        id: i + 10,
+        name: `Item-${i + 10}`
+    });
 }
 
-class Items extends React.Component {
-    propTypes: {
-        data: React.PropTypes.array.isRequired
-    }
+let datasource = window.datasource = Immutable.fromJS([initialData1, initialData2])
 
-    onReorder (...args) {
-        reorder(this.props.data, ...args);
-    }
+function reorder (fromObj, toObj) {
+    const dragListId = fromObj.listId;
+    const dragId = fromObj.id;
+    const dropListId = toObj.listId;
+    const dropId = toObj.id;
 
+    console.log(`Dragged ${dragId} in list ${dragListId} to ${dropId} in list ${dropListId}`);
+
+    datasource = datasource.withMutations(source => {
+        let dragList = source.get(dragListId);
+        let dropList = source.get(dropListId);
+        const dragIndex = dragList.findIndex(item => item.get('id') === dragId);
+        const dropIndex = dropList.findIndex(item => item.get('id') === dropId);
+
+        const dragItem = dragList.get(dragIndex);
+        source.set(dragListId, dragList.splice(dragIndex, 1));
+        source.set(dropListId, dropList.splice(dropIndex, 0, dragItem));
+    });
+
+    render(datasource);
+}
+
+class App extends React.Component {
     render () {
-        const items = this.props.data.toArray().map(i => (
-            <DraggableItem
-                key={i}
-                id={i}
-                name="Item"
-                onReorder={this.onReorder.bind(this)}
-            />
-        ));
-
+        const lists = this.props.lists.toArray().map((list, i) => {
+            return <SortableList key={i} id={i} data={list} onReorder={reorder}/>
+        });
         return (
-            <ul className="list">
-                {items}
+            <div>
+                {lists}
                 <ItemPreview key="__preview" name="Item" />
-            </ul>
-        );
+            </div>
+        )
     }
 }
 
-const SortableList = DragDropContext(Touch)(Items);
-
-function render (data = initialData) {
-    ReactDOM.render(<SortableList data={data}/>, document.getElementById('main'));
+function render (lists = datasource) {
+    ReactDOM.render(React.createElement(DragDropContext(Touch)(App), { lists }), document.getElementById('main'));
 }
 
 render();

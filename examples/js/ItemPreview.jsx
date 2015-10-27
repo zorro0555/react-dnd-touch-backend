@@ -5,8 +5,6 @@
 'use strict';
 
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
-
 import DragLayer from 'react-dnd/lib/DragLayer';
 
 function collect (monitor) {
@@ -38,32 +36,30 @@ function getItemStyles (currentOffset) {
     };
 }
 
-export const ItemPreview = React.createClass({
-    displayName: 'ItemPreview',
-    mixins: [PureRenderMixin],
-    propTypes: {
-        id: React.PropTypes.string,
-        name: React.PropTypes.string,
-        currentOffset: React.PropTypes.shape({
-            x: React.PropTypes.number,
-            y: React.PropTypes.number
-        }),
-        isDragging: React.PropTypes.bool
-    },
-    render: function () {
+@DragLayer(collect)
+export default class ItemPreview extends React.Component {
+    render () {
         if (!this.props.isDragging) {
             return <li></li>;
         }
 
         return (
-            <li
+            <div
                 className="item preview"
                 style={getItemStyles(this.props.currentOffset)}
             >
                 {this.props.id} {this.props.name}
-            </li>
+            </div>
         );
     }
-});
+}
 
-export default DragLayer(collect)(ItemPreview);
+ItemPreview.propTypes = {
+    id: React.PropTypes.string,
+    name: React.PropTypes.string,
+    currentOffset: React.PropTypes.shape({
+        x: React.PropTypes.number,
+        y: React.PropTypes.number
+    }),
+    isDragging: React.PropTypes.bool
+};
