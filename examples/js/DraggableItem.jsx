@@ -28,6 +28,13 @@ const dragSource = {
 const dropTarget = {
     drop (props, monitor) {
         const item = monitor.getItem();
+        // Don't trigger reorder if it's to the same spot
+        if (
+            item.listId === props.listId &&
+            item.id === props.id
+        ) {
+            return;
+        }
         item.onReorder(
             {
                 listId: item.listId,

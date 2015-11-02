@@ -38,12 +38,12 @@ function reorder (fromObj, toObj) {
 
     datasource = datasource.withMutations(source => {
         let dragList = source.get(dragListId);
-        let dropList = source.get(dropListId);
         const dragIndex = dragList.findIndex(item => item.get('id') === dragId);
-        const dropIndex = dropList.findIndex(item => item.get('id') === dropId);
-
         const dragItem = dragList.get(dragIndex);
-        source.set(dragListId, dragList.splice(dragIndex, 1));
+        source.set(dragListId, dragList.delete(dragIndex));
+
+        let dropList = source.get(dropListId);
+        const dropIndex = dropList.findIndex(item => item.get('id') === dropId);
         source.set(dropListId, dropList.splice(dropIndex, 0, dragItem));
     });
 
@@ -53,7 +53,7 @@ function reorder (fromObj, toObj) {
 class App extends React.Component {
     render () {
         const lists = this.props.lists.toArray().map((list, i) => {
-            return <SortableList key={i} id={i} data={list} onReorder={reorder}/>
+            return <SortableList key={i} id={i} data={list} onReorder={reorder}/>;
         });
         return (
             <div>
@@ -64,8 +64,10 @@ class App extends React.Component {
     }
 }
 
+var DragDropApp = DragDropContext(Touch)(App);
+
 function render (lists = datasource) {
-    ReactDOM.render(React.createElement(DragDropContext(Touch)(App), { lists }), document.getElementById('main'));
+    ReactDOM.render(<DragDropApp lists={lists} />, document.getElementById('main'));
 }
 
 render();
