@@ -30,7 +30,7 @@ We might try to build it directly in the Backend itself in the future to compens
 ### Mouse events support
 You can enable capturing mouse events by configuring your TouchBackend as follows:
 ```js
-TouchBackend({ enableMouseSupport: true })
+DragDropContext(TouchBackend({ enableMouseSupport: true }));
 ```
 
 ## Examples
