@@ -64,7 +64,7 @@ export default class Item extends React.Component {
 
         let content = (
             <li className={className}>
-                {this.props.id} {this.props.name}
+                {this.props.id} <a href="http://google.com">{this.props.name}</a>
             </li>
         );
 

@@ -5,7 +5,7 @@
 'use strict';
 
 import invariant from 'invariant';
-import _ from 'lodash.defaults';
+import defaults from 'lodash.defaults';
 
 function getEventClientTouchOffset (e) {
     if (e.targetTouches.length === 1) {
@@ -53,7 +53,7 @@ const eventNames = {
 
 export class TouchBackend {
     constructor (manager, options = {}) {
-        options = _.defaults(options, {
+        options = defaults(options, {
             enableTouchEvents: true,
             enableMouseEvents: false
         });
@@ -122,7 +122,7 @@ export class TouchBackend {
         });
     }
 
-    removeEventListener (subject, type, handler, capture) {
+    removeEventListener (subject, event, handler, capture) {
         this.listenerTypes.forEach(function (listenerType) {
             subject.removeEventListener(eventNames[listenerType][event], handler, capture);
         });
