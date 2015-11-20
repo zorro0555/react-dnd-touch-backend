@@ -5,12 +5,23 @@
 'use strict';
 
 import invariant from 'invariant';
+import _ from 'lodash.defaults';
+
+function getEventClientTouchOffset (e) {
+    if (e.targetTouches.length === 1) {
+        return getEventClientOffset(e.targetTouches[0]);
+    }
+}
 
 function getEventClientOffset (e) {
-    return {
-        x: e.clientX,
-        y: e.clientY
-    };
+    if (e.targetTouches) {
+        return getEventClientTouchOffset(e);
+    } else {
+        return {
+            x: e.clientX,
+            y: e.clientY
+        };
+    }
 }
 
 const ELEMENT_NODE = 1;
@@ -27,8 +38,26 @@ function getNodeClientOffset (node) {
     return { x: left, y: top };
 }
 
+const eventNames = {
+    mouse: {
+        start: 'mousedown',
+        move: 'mousemove',
+        end: 'mouseup'
+    },
+    touch: {
+        start: 'touchstart',
+        move: 'touchmove',
+        end: 'touchend'
+    }
+};
+
 export class TouchBackend {
-    constructor (manager) {
+    constructor (manager, options = {}) {
+        options = _.defaults(options, {
+            enableTouchEvents: true,
+            enableMouseEvents: false
+        });
+
         this.actions = manager.getActions();
         this.monitor = manager.getMonitor();
         this.registry = manager.getRegistry();
@@ -39,13 +68,22 @@ export class TouchBackend {
         this.sourcePreviewNodeOptions = {};
         this.targetNodes = {};
         this.targetNodeOptions = {};
+        this.listenerTypes = [];
         this._mouseClientOffset = {};
 
+        if (options.enableMouseEvents) {
+            this.listenerTypes.push('mouse');
+        }
+
+        if (options.enableTouchEvents) {
+            this.listenerTypes.push('touch');
+        }
+
         this.getSourceClientOffset = this.getSourceClientOffset.bind(this);
-        this.handleTopTouchStart = this.handleTopTouchStart.bind(this);
-        this.handleTopTouchStartCapture = this.handleTopTouchStartCapture.bind(this);
-        this.handleTopTouchMoveCapture = this.handleTopTouchMoveCapture.bind(this);
-        this.handleTopTouchEndCapture = this.handleTopTouchEndCapture.bind(this);
+        this.handleTopMoveStart = this.handleTopMoveStart.bind(this);
+        this.handleTopMoveStartCapture = this.handleTopMoveStartCapture.bind(this);
+        this.handleTopMoveCapture = this.handleTopMoveCapture.bind(this);
+        this.handleTopMoveEndCapture = this.handleTopMoveEndCapture.bind(this);
     }
 
     setup () {
@@ -56,10 +94,10 @@ export class TouchBackend {
         invariant(!this.constructor.isSetUp, 'Cannot have two Touch backends at the same time.');
         this.constructor.isSetUp = true;
 
-        window.addEventListener('touchstart', this.handleTopTouchStartCapture, true);
-        window.addEventListener('touchstart', this.handleTopTouchStart);
-        window.addEventListener('touchmove', this.handleTopTouchMoveCapture, true);
-        window.addEventListener('touchend', this.handleTopTouchEndCapture, true);
+        this.addEventListener(window, 'start', this.handleTopMoveStartCapture, true);
+        this.addEventListener(window, 'start', this.handleTopMoveStart);
+        this.addEventListener(window, 'move',  this.handleTopMoveCapture, true);
+        this.addEventListener(window, 'end',   this.handleTopMoveEndCapture, true);
     }
 
     teardown () {
@@ -70,23 +108,35 @@ export class TouchBackend {
         this.constructor.isSetUp = false;
         this._mouseClientOffset = {};
 
-        window.removeEventListener('touchstart', this.handleTopTouchStartCapture, true);
-        window.removeEventListener('touchstart', this.handleTopTouchStart);
-        window.removeEventListener('touchmove', this.handleTopTouchMoveCapture, true);
-        window.removeEventListener('touchend', this.handleTopTouchEndCapture, true);
+        this.removeEventListener(window, 'start', this.handleTopMoveStartCapture, true);
+        this.removeEventListener(window, 'start', this.handleTopMoveStart);
+        this.removeEventListener(window, 'move',  this.handleTopMoveCapture, true);
+        this.removeEventListener(window, 'end',   this.handleTopMoveEndCapture, true);
 
         this.uninstallSourceNodeRemovalObserver();
     }
 
+    addEventListener (subject, event, handler, capture) {
+        this.listenerTypes.forEach(function (listenerType) {
+            subject.addEventListener(eventNames[listenerType][event], handler, capture);
+        });
+    }
+
+    removeEventListener (subject, type, handler, capture) {
+        this.listenerTypes.forEach(function (listenerType) {
+            subject.removeEventListener(eventNames[listenerType][event], handler, capture);
+        });
+    }
+
     connectDragSource (sourceId, node, options) {
-        const handleTouchStart = this.handleTouchStart.bind(this, sourceId);
+        const handleMoveStart = this.handleMoveStart.bind(this, sourceId);
         this.sourceNodes[sourceId] = node;
 
-        node.addEventListener('touchstart', handleTouchStart);
+        this.addEventListener(node, 'start', handleMoveStart);
 
         return () => {
             delete this.sourceNodes[sourceId];
-            node.removeEventListener('touchstart', handleTouchStart);
+            this.removeEventListener(node, 'start', handleMoveStart);
         };
     }
 
@@ -112,49 +162,47 @@ export class TouchBackend {
         return getNodeClientOffset(this.sourceNodes[sourceId]);
     }
 
-    handleTopTouchStartCapture (e) {
-        this.touchStartSourceIds = [];
+    handleTopMoveStartCapture (e) {
+        this.moveStartSourceIds = [];
     }
 
-    handleTouchStart (sourceId) {
-        this.touchStartSourceIds.unshift(sourceId);
+    handleMoveStart (sourceId) {
+        this.moveStartSourceIds.unshift(sourceId);
     }
 
-    handleTopTouchStart (e) {
-        if (e.targetTouches.length !== 1) {
-            return;
-        }
-
+    handleTopMoveStart (e) {
         // Don't prematurely preventDefault() here since it might:
         // 1. Mess up scrolling
         // 2. Mess up long tap (which brings up context menu)
         // 3. If there's an anchor link as a child, tap won't be triggered on link
 
-        this._mouseClientOffset = getEventClientOffset(e.targetTouches[0]);
+        const clientOffset = getEventClientOffset(e);
+        if (clientOffset) {
+            this._mouseClientOffset = clientOffset;
+        }
     }
 
-    handleTopTouchMoveCapture (e) {
-        const { touchStartSourceIds } = this;
+    handleTopMoveCapture (e) {
+        const { moveStartSourceIds } = this;
+        const clientOffset = getEventClientOffset(e);
 
-        if (e.targetTouches.length !== 1) {
+        if (!clientOffset) {
             return;
         }
 
-        const clientOffset = getEventClientOffset(e.targetTouches[0]);
 
         // If we're not dragging and we've moved a little, that counts as a drag start
         if (
             !this.monitor.isDragging() &&
             this._mouseClientOffset.hasOwnProperty('x') &&
-            touchStartSourceIds &&
+            moveStartSourceIds &&
             (
                 this._mouseClientOffset.x !== clientOffset.x ||
                 this._mouseClientOffset.y !== clientOffset.y
             )
         ) {
-            this.touchStartSourceIds = null;
-
-            this.actions.beginDrag(touchStartSourceIds, {
+            this.moveStartSourceIds = null;
+            this.actions.beginDrag(moveStartSourceIds, {
                 clientOffset: this._mouseClientOffset,
                 getSourceClientOffset: this.getSourceClientOffset,
                 publishSource: false
@@ -185,8 +233,9 @@ export class TouchBackend {
         });
     }
 
-    handleTopTouchEndCapture (e) {
+    handleTopMoveEndCapture (e) {
         if (!this.monitor.isDragging() || this.monitor.didDrop()) {
+            this.moveStartSourceIds = null;
             return;
         }
 
@@ -232,6 +281,14 @@ export class TouchBackend {
     }
 }
 
-export default function createTouchBackend (manager) {
-    return new TouchBackend(manager);
+export default function createTouchBackend (optionsOrManager = {}) {
+    const touchBackendFactory = function (manager) {
+        return new TouchBackend(manager, optionsOrManager);
+    };
+
+    if (optionsOrManager.getMonitor) {
+        return touchBackendFactory(optionsOrManager);
+    } else {
+        return touchBackendFactory;
+    }
 }

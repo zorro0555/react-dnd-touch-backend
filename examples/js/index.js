@@ -64,7 +64,7 @@ class App extends React.Component {
     }
 }
 
-var DragDropApp = DragDropContext(Touch)(App);
+var DragDropApp = DragDropContext(Touch({ enableMouseEvents: true }))(App);
 
 function render (lists = datasource) {
     ReactDOM.render(<DragDropApp lists={lists} />, document.getElementById('main'));
