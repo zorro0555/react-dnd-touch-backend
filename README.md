@@ -30,14 +30,7 @@ We might try to build it directly in the Backend itself in the future to compens
 ### Mouse events support
 You can enable capturing mouse events by configuring your TouchBackend as follows:
 ```js
-import { default as TouchBackend } from 'react-dnd-touch-backend';
-import { DragDropContext } from 'react-dnd';
-
-var YourApp = React.createClass(
-  /* ... */
-);
-
-module.exports = DragDropContext(TouchBackend({ enableMouseSupport: true }))(YourApp);
+TouchBackend({ enableMouseSupport: true })
 ```
 
 ## Examples
