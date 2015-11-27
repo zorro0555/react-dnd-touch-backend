@@ -259,6 +259,10 @@ export class TouchBackend {
             }
         });
 
+        if(!node || !node.parentElement) {
+            return;
+        }
+
         this.draggedSourceNodeRemovalObserver.observe(
             node.parentElement,
             { childList: true }
