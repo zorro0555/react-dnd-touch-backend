@@ -4,6 +4,7 @@
  */
 'use strict';
 
+import { name } from '../package.json';
 import babelify from 'babelify';
 import browserify from 'browserify';
 import gulp from 'gulp';
@@ -19,25 +20,28 @@ function rebundle (bundle, opts) {
         .on('end', opts.onEnd || Function.prototype);
 }
 
-export default function dev (opts = {}) {
-    const { src, destFilename, destFolder } = opts;
+function bundle (args) {
+    return browserify({
+        ...args,
+        debug: true,
+        standalone: name
+    })
+    .transform(babelify)
+}
 
+export default function dev ({ src, destFilename, destFolder }) {
     return () => {
-        const bundler = watchify(
-            browserify({
-                ...watchify.args,
-                entries: src,
-                debug: true
-            })
-            .transform(babelify)
-        );
+        const bundler = watchify(bundle({
+            ...watchify.args,
+            entries: src
+        }));
 
         bundler.on('log', gutil.log);
 
         function rebundleFn () {
             rebundle(bundler.bundle(), {
-                destFolder: destFolder,
-                destFilename: destFilename
+                destFolder,
+                destFilename
             });
         }
 
@@ -45,4 +49,16 @@ export default function dev (opts = {}) {
 
         rebundleFn();
     };
+}
+
+export function dist ({ src, destFolder, destFilename }) {
+    return () => {
+        const bundler = bundle({
+            entries: src
+        });
+        return rebundle(bundler.bundle(), {
+            destFolder,
+            destFilename
+        });
+    }
 }
