@@ -259,7 +259,7 @@ export class TouchBackend {
             }
         });
 
-        if(!node || !node.parentElement) {
+        if (!node || !node.parentElement) {
             return;
         }
 
