@@ -36,7 +36,7 @@ DragDropContext(TouchBackend({ enableMouseEvents: true }));
 ## Examples
 The `examples` folder has a sample integration. In order to build it, run:
 ```bash
-npm i && gulp example
+npm i && gulp js-dev
 ```
 Then, open `examples/index.html` in a mobile browser.
 
