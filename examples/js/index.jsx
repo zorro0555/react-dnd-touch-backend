@@ -26,7 +26,7 @@ for (; i < 10; i++) {
     });
 }
 
-let datasource = window.datasource = Immutable.fromJS([initialData1, initialData2])
+let datasource = window.datasource = Immutable.fromJS([initialData1, initialData2]);
 
 function reorder (fromObj, toObj) {
     const dragListId = fromObj.listId;
@@ -60,7 +60,7 @@ class App extends React.Component {
                 {lists}
                 <ItemPreview key="__preview" name="Item" />
             </div>
-        )
+        );
     }
 }
 

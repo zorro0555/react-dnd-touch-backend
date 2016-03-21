@@ -7,19 +7,15 @@ import del from 'del';
 import babel from 'gulp-babel';
 
 import { default as js, dist } from './tasks/browserify';
-import lint from './tasks/lint';
 
 gulp.task('clean', () => {
     del.sync(['dist']);
     del.sync(['examples/*.browserified.js']);
 });
 
-// Lint
-gulp.task('lint', lint);
-
 // Compile example
 gulp.task('js-dev', js({
-    src: './examples/js/index.js',
+    src: './examples/js/index.jsx',
     destFilename: 'main.browserified.js',
     destFolder: './examples/'
 }));
@@ -37,7 +33,7 @@ gulp.task('babel', () => {
         .pipe(gulp.dest('dist'));
 });
 
-gulp.task('dev', ['clean', 'lint', 'js-dev']);
-gulp.task('dist', ['lint', 'clean', 'babel', 'js-browserify']);
+gulp.task('dev', ['clean', 'js-dev']);
+gulp.task('dist', ['clean', 'babel', 'js-browserify']);
 
 gulp.task('default', ['dev']);

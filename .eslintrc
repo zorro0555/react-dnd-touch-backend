@@ -1,35 +1,39 @@
 {
-    "parser": "babel-eslint",
     "env": {
         "browser": true,
-        "node":    true
+        "node": true,
+        "es6": true
     },
-    "ecmaFeatures": {
-        "jsx": true
+    "parser": "babel-eslint",
+    "plugins": [ "react" ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true
+        }
     },
     "rules": {
         "block-scoped-var": 2,
         "camelcase": 2,
         "comma-dangle": [2, "never"],
         "comma-spacing": [2, { "before": false, "after": true }],
-        "comma-style": 0,
         "comma-style": [2, "last"],
         "complexity": 0,
         "curly": [2, "all"],
         "dot-notation": 0,
-        "eqeqeq": 2,
+        "eqeqeq": [2, "allow-null"],
         "global-strict": 0,
         "guard-for-in": 2,
         "indent": 2,
         "jsx-quotes": [2, "prefer-double"],
         "key-spacing": [2, { "beforeColon": false, "afterColon": true }],
+        "keyword-spacing": 2,
         "max-depth": 0,
         "max-len": [2, 120, 4, { "ignoreComments": true, "ignoreUrls": true }],
         "max-params": 0,
         "max-statements": 0,
         "new-cap": 0,
-        "new-cap": 2,
-        "no-bitwise": 2,
+        "no-bitwise": 0,
         "no-caller": 2,
         "no-cond-assign": 0,
         "no-constant-condition": 2,
@@ -47,18 +51,13 @@
         "no-shadow": 0,
         "no-trailing-spaces": 0,
         "no-undef": 2,
-        "no-unused-vars": [2, {"vars": "all", "args": "none"}],
+        "no-unused-vars": [2, {"vars": "all", "args": "none", "varsIgnorePattern": "^[rR]eact"}],
         "no-use-before-define":  [2, "nofunc"],
         "padded-blocks": [2, "never"],
         "quotes": [2, "single"],
         "semi":  [2, "always"],
-        "space-after-keywords": 2,
-        "space-before-function-paren": 2,
         "spaced-comment": [2, "always"],
         "strict": 0,
         "wrap-iife": [2, "inside"]
-    },
-    "plugins": [
-        "react"
-    ]
+    }
 }
