@@ -55,6 +55,7 @@ export class TouchBackend {
         options = {
             enableTouchEvents: true,
             enableMouseEvents: false,
+            delay: 0,
             ...options
         };
 
@@ -62,6 +63,7 @@ export class TouchBackend {
         this.monitor = manager.getMonitor();
         this.registry = manager.getRegistry();
 
+        this.delay = options.delay;
         this.sourceNodes = {};
         this.sourceNodeOptions = {};
         this.sourcePreviewNodes = {};
@@ -81,6 +83,7 @@ export class TouchBackend {
 
         this.getSourceClientOffset = this.getSourceClientOffset.bind(this);
         this.handleTopMoveStart = this.handleTopMoveStart.bind(this);
+        this.handleTopMoveStartDelay = this.handleTopMoveStartDelay.bind(this);
         this.handleTopMoveStartCapture = this.handleTopMoveStartCapture.bind(this);
         this.handleTopMoveCapture = this.handleTopMoveCapture.bind(this);
         this.handleTopMoveEndCapture = this.handleTopMoveEndCapture.bind(this);
@@ -94,8 +97,12 @@ export class TouchBackend {
         invariant(!this.constructor.isSetUp, 'Cannot have two Touch backends at the same time.');
         this.constructor.isSetUp = true;
 
+        var startHandler = this.delay
+            ? this.handleTopMoveStartDelay
+            : this.handleTopMoveStart;
+
+        this.addEventListener(window, 'start', startHandler);
         this.addEventListener(window, 'start', this.handleTopMoveStartCapture, true);
-        this.addEventListener(window, 'start', this.handleTopMoveStart);
         this.addEventListener(window, 'move',  this.handleTopMoveCapture, true);
         this.addEventListener(window, 'end',   this.handleTopMoveEndCapture, true);
     }
@@ -182,7 +189,13 @@ export class TouchBackend {
         }
     }
 
+    handleTopMoveStartDelay (e) {
+        this.timeout = setTimeout(this.handleTopMoveStart.bind(this, e), this.delay);
+    }
+
     handleTopMoveCapture (e) {
+        clearTimeout(this.timeout);
+
         const { moveStartSourceIds } = this;
         const clientOffset = getEventClientOffset(e);
 
