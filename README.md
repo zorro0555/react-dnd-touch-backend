@@ -17,6 +17,7 @@ import { DragDropContext } from 'react-dnd';
 
 var YourApp = React.createClass(
   /* ... */
+
 );
 
 module.exports = DragDropContext(TouchBackend)(YourApp);
@@ -27,11 +28,12 @@ Since native Drag-n-Drop is not currently supported in touch devices. A custom [
 
 We might try to build it directly in the Backend itself in the future to compensate for this limitation.
 
-### Mouse events support
+### Mouse events support*
 You can enable capturing mouse events by configuring your TouchBackend as follows:
 ```js
 DragDropContext(TouchBackend({ enableMouseEvents: true }));
 ```
+**NOTE*: This is buggy due to the difference in `touchstart/touchend` event propagation compared to `mousedown/mouseup/click`. I highly recommend that you use [react-dnd-html5-backend](https://github.com/gaearon/react-dnd-html5-backend) instead for a more performant native HTML5 drag capability.**
 
 ## Examples
 The `examples` folder has a sample integration. In order to build it, run:

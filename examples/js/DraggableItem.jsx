@@ -47,15 +47,6 @@ const dropTarget = {
     }
 };
 
-@DragSource('Item', dragSource, (connect, monitor) => ({
-    connectDragSource: connect.dragSource(),
-    connectDragPreview: connect.dragPreview(),
-    isDragging: monitor.isDragging()
-}))
-@DropTarget('Item', dropTarget, (connect, monitor) => ({
-    connectDropTarget: connect.dropTarget(),
-    isOver: monitor.isOver()
-}))
 export default class Item extends React.Component {
     render () {
         const className = classnames('item', {
@@ -92,3 +83,20 @@ Item.PropTypes = {
     isDragging: React.PropTypes.bool,
     isOver: React.PropTypes.bool
 };
+
+export default DragSource(
+    'Item',
+    dragSource,
+    (connect, monitor) => ({
+        connectDragSource: connect.dragSource(),
+        connectDragPreview: connect.dragPreview(),
+        isDragging: monitor.isDragging()
+    })
+)(DropTarget(
+    'Item',
+    dropTarget,
+    (connect, monitor) => ({
+        connectDropTarget: connect.dropTarget(),
+        isOver: monitor.isOver()
+    })
+)(Item));

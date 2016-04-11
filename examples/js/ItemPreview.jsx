@@ -36,7 +36,6 @@ function getItemStyles (currentOffset) {
     };
 }
 
-@DragLayer(collect)
 export default class ItemPreview extends React.Component {
     render () {
         if (!this.props.isDragging) {
@@ -63,3 +62,5 @@ ItemPreview.propTypes = {
     }),
     isDragging: React.PropTypes.bool
 };
+
+export default DragLayer(collect)(ItemPreview);
