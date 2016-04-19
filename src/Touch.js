@@ -52,10 +52,13 @@ const eventNames = {
 
 export class TouchBackend {
     constructor (manager, options = {}) {
+        options.delayTouchStart = options.delayTouchStart || options.delay;
+
         options = {
             enableTouchEvents: true,
             enableMouseEvents: false,
-            delay: 0,
+            delayTouchStart: 0,
+            delayMouseStart: 0,
             ...options
         };
 
@@ -63,7 +66,8 @@ export class TouchBackend {
         this.monitor = manager.getMonitor();
         this.registry = manager.getRegistry();
 
-        this.delay = options.delay;
+        this.delayTouchStart = options.delayTouchStart;
+        this.delayMouseStart = options.delayMouseStart;
         this.sourceNodes = {};
         this.sourceNodeOptions = {};
         this.sourcePreviewNodes = {};
@@ -95,13 +99,9 @@ export class TouchBackend {
         }
 
         invariant(!this.constructor.isSetUp, 'Cannot have two Touch backends at the same time.');
-        this.constructor.isSetUp = true;
+        this.constructor.isSetUp = true;        
 
-        var startHandler = this.delay
-            ? this.handleTopMoveStartDelay
-            : this.handleTopMoveStart;
-
-        this.addEventListener(window, 'start', startHandler);
+        this.addEventListener(window, 'start', this.getTopMoveStartHandler());
         this.addEventListener(window, 'start', this.handleTopMoveStartCapture, true);
         this.addEventListener(window, 'move',  this.handleTopMoveCapture, true);
         this.addEventListener(window, 'end',   this.handleTopMoveEndCapture, true);
@@ -177,6 +177,14 @@ export class TouchBackend {
         this.moveStartSourceIds.unshift(sourceId);
     }
 
+    getTopMoveStartHandler () {
+        if (!this.delayTouchStart && !this.delayMouseStart) {
+            return this.handleTopMoveStart;
+        }
+
+        return this.handleTopMoveStartDelay;
+    }
+
     handleTopMoveStart (e) {
         // Don't prematurely preventDefault() here since it might:
         // 1. Mess up scrolling
@@ -190,7 +198,10 @@ export class TouchBackend {
     }
 
     handleTopMoveStartDelay (e) {
-        this.timeout = setTimeout(this.handleTopMoveStart.bind(this, e), this.delay);
+        const delay = (e.type === eventNames.touch.start) 
+            ? this.delayTouchStart
+            : this.delayMouseStart;
+        this.timeout = setTimeout(this.handleTopMoveStart.bind(this, e), delay);
     }
 
     handleTopMoveCapture (e) {
