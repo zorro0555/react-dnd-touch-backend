@@ -37,13 +37,21 @@ function reorder (fromObj, toObj) {
     console.log(`Dragged ${dragId} in list ${dragListId} to ${dropId} in list ${dropListId}`);
 
     datasource = datasource.withMutations(source => {
-        let dragList = source.get(dragListId);
+        const dragList = source.get(dragListId);
         const dragIndex = dragList.findIndex(item => item.get('id') === dragId);
         const dragItem = dragList.get(dragIndex);
         source.set(dragListId, dragList.delete(dragIndex));
 
-        let dropList = source.get(dropListId);
-        const dropIndex = dropList.findIndex(item => item.get('id') === dropId);
+        const dropList = source.get(dropListId);
+        let dropIndex = dropList.findIndex(item => item.get('id') === dropId);
+
+        if( 
+            dragListId === dropListId &&
+            dragIndex <= dropIndex
+        ) {
+            dropIndex++;
+        }
+
         source.set(dropListId, dropList.splice(dropIndex, 0, dragItem));
     });
 
