@@ -72,7 +72,6 @@ export class TouchBackend {
         this.sourceNodeOptions = {};
         this.sourcePreviewNodes = {};
         this.sourcePreviewNodeOptions = {};
-        this.targetNodes = {};
         this.targetNodeOptions = {};
         this.listenerTypes = [];
         this._mouseClientOffset = {};
@@ -90,6 +89,7 @@ export class TouchBackend {
         this.handleTopMoveStartDelay = this.handleTopMoveStartDelay.bind(this);
         this.handleTopMoveStartCapture = this.handleTopMoveStartCapture.bind(this);
         this.handleTopMoveCapture = this.handleTopMoveCapture.bind(this);
+        this.handleTopMove = this.handleTopMove.bind(this);
         this.handleTopMoveEndCapture = this.handleTopMoveEndCapture.bind(this);
     }
 
@@ -103,6 +103,7 @@ export class TouchBackend {
 
         this.addEventListener(window, 'start', this.getTopMoveStartHandler());
         this.addEventListener(window, 'start', this.handleTopMoveStartCapture, true);
+        this.addEventListener(window, 'move',  this.handleTopMove);
         this.addEventListener(window, 'move',  this.handleTopMoveCapture, true);
         this.addEventListener(window, 'end',   this.handleTopMoveEndCapture, true);
     }
@@ -118,6 +119,7 @@ export class TouchBackend {
         this.removeEventListener(window, 'start', this.handleTopMoveStartCapture, true);
         this.removeEventListener(window, 'start', this.handleTopMoveStart);
         this.removeEventListener(window, 'move',  this.handleTopMoveCapture, true);
+        this.removeEventListener(window, 'move',  this.handleTopMove);
         this.removeEventListener(window, 'end',   this.handleTopMoveEndCapture, true);
 
         this.uninstallSourceNodeRemovalObserver();
@@ -158,10 +160,13 @@ export class TouchBackend {
     }
 
     connectDropTarget (targetId, node) {
-        this.targetNodes[targetId] = node;
+
+        const handleMove = (e) => this.handleMove(e, targetId);
+
+        this.addEventListener(node, 'move', handleMove);
 
         return () => {
-            delete this.targetNodes[targetId];
+            this.removeEventListener(node, 'move', handleMove);
         };
     }
 
@@ -205,9 +210,17 @@ export class TouchBackend {
     }
 
     handleTopMoveCapture (e) {
+        this.dragOverTargetIds = [];
+    }
+
+    handleMove( e, targetId ) {
+        this.dragOverTargetIds.unshift( targetId );
+    }
+
+    handleTopMove (e) {
         clearTimeout(this.timeout);
 
-        const { moveStartSourceIds } = this;
+        const { moveStartSourceIds, dragOverTargetIds } = this;
         const clientOffset = getEventClientOffset(e);
 
         if (!clientOffset) {
@@ -243,7 +256,7 @@ export class TouchBackend {
 
         e.preventDefault();
 
-        const matchingTargetIds = Object.keys(this.targetNodes)
+        /*const matchingTargetIds = Object.keys(this.targetNodes)
             .filter((targetId) => {
                 const boundingRect = this.targetNodes[targetId].getBoundingClientRect();
                 return clientOffset.x >= boundingRect.left &&
@@ -251,8 +264,9 @@ export class TouchBackend {
                 clientOffset.y >= boundingRect.top &&
                 clientOffset.y <= boundingRect.bottom;
             });
+        */
 
-        this.actions.hover(matchingTargetIds, {
+        this.actions.hover(dragOverTargetIds, {
             clientOffset: clientOffset
         });
     }
