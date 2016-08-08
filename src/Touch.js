@@ -160,13 +160,40 @@ export class TouchBackend {
     }
 
     connectDropTarget (targetId, node) {
+        const handleMove = (e) => {
+            let coords;
 
-        const handleMove = (e) => this.handleMove(e, targetId);
+            /**
+             * Grab the coordinates for the current mouse/touch position
+             */
+            switch (e.type) {
+            case eventNames.mouse.move:
+                coords = { x: e.clientX, y: e.clientY };
+                break;
 
-        this.addEventListener(node, 'move', handleMove);
+            case eventNames.touch.move:
+                coords = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                break;
+            default:
+            }
+
+            /**
+             * Use the coordinates to grab the element the drag ended on.
+             * If the element's parent is the same as the target node then we have hit a drop target and can handle the move.
+             */
+            if (document.elementFromPoint(coords.x, coords.y).parentNode === node) {
+                return this.handleMove(e, targetId);
+            }
+        };
+
+        /**
+         * Attaching the event listener to the body so that touchmove will work while dragging over multiple target elements.
+         */
+        this.addEventListener(document.querySelector('body'), 'move', handleMove);
+
 
         return () => {
-            this.removeEventListener(node, 'move', handleMove);
+            this.removeEventListener(document.querySelector('body'), 'move', handleMove);
         };
     }
 
