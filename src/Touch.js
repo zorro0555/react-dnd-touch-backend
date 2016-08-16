@@ -174,14 +174,22 @@ export class TouchBackend {
             case eventNames.touch.move:
                 coords = { x: e.touches[0].clientX, y: e.touches[0].clientY };
                 break;
-            default:
             }
 
             /**
              * Use the coordinates to grab the element the drag ended on.
-             * If the element's parent is the same as the target node then we have hit a drop target and can handle the move.
+             * If the element is the same as the target node (or any of it's children) then we have hit a drop target and can handle the move.
              */
-            if (document.elementFromPoint(coords.x, coords.y).parentNode === node) {
+            let droppedOn = document.elementFromPoint(coords.x, coords.y);
+            let childMatch = false;
+
+            for (var i = 0; i < node.childNodes.length; i++) {
+                if (node.childNodes[i] === droppedOn) {
+                    childMatch = true;
+                };
+            }
+
+            if (droppedOn === node || childMatch) {
                 return this.handleMove(e, targetId);
             }
         };

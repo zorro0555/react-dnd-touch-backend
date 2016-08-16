@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style type="text/css">
+            .source, .target {
+                margin: 20px;
+                padding: 10px;
+                text-align: center;
+                font-size: 20px;
+            }
+            .source, .source-preview {
+                background: #c7c7c7;
+                width: 100px;
+                height: 100px;
+                cursor: pointer;
+            }
+            .source-preview {
+                background: #888888;
+                opacity: 0.5;
+                position: fixed;
+                z-index: 100;
+                left: 0;
+                top: 0;
+                opacity: 1;
+                transition: none;
+                pointer-events: none;
+                -webkit-touch-callout: none;
+            }
+            .target {
+                background: #eeeeee;
+                width: 300px;
+                height: 300px;
+            }
+            .nested-child {
+                padding: 10px;
+                margin: 50px 10px;
+                background-color: #ffffff;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script type="text/javascript" src="./main.browserified.js"></script>
+    </body>
+</html>

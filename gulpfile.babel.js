@@ -13,11 +13,16 @@ gulp.task('clean', () => {
     del.sync(['examples/*.browserified.js']);
 });
 
-// Compile example
+// Compile examples
 gulp.task('js-dev', js({
     src: './examples/js/index.jsx',
     destFilename: 'main.browserified.js',
     destFolder: './examples/'
+}));
+gulp.task('js-dev', js({
+    src: './examples/dropTarget/js/index.jsx',
+    destFilename: 'main.browserified.js',
+    destFolder: './examples/dropTarget/'
 }));
 
 // Compile scripts
