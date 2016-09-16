@@ -99,7 +99,7 @@ export class TouchBackend {
         }
 
         invariant(!this.constructor.isSetUp, 'Cannot have two Touch backends at the same time.');
-        this.constructor.isSetUp = true;        
+        this.constructor.isSetUp = true;
 
         this.addEventListener(window, 'start', this.getTopMoveStartHandler());
         this.addEventListener(window, 'start', this.handleTopMoveStartCapture, true);
@@ -181,13 +181,7 @@ export class TouchBackend {
              * If the element is the same as the target node (or any of it's children) then we have hit a drop target and can handle the move.
              */
             let droppedOn = document.elementFromPoint(coords.x, coords.y);
-            let childMatch = false;
-
-            for (var i = 0; i < node.childNodes.length; i++) {
-                if (node.childNodes[i] === droppedOn) {
-                    childMatch = true;
-                };
-            }
+            let childMatch = node.contains(droppedOn);
 
             if (droppedOn === node || childMatch) {
                 return this.handleMove(e, targetId);
@@ -238,7 +232,7 @@ export class TouchBackend {
     }
 
     handleTopMoveStartDelay (e) {
-        const delay = (e.type === eventNames.touch.start) 
+        const delay = (e.type === eventNames.touch.start)
             ? this.delayTouchStart
             : this.delayMouseStart;
         this.timeout = setTimeout(this.handleTopMoveStart.bind(this, e), delay);
