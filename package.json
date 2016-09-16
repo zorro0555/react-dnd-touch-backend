@@ -1,6 +1,6 @@
 {
   "name": "react-dnd-touch-backend",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Touch backend for react-dnd",
   "main": "dist/Touch.js",
   "scripts": {
