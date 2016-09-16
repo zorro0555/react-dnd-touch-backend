@@ -7,9 +7,11 @@
     "parser": "babel-eslint",
     "plugins": [ "react" ],
     "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
         "ecmaFeatures": {
             "jsx": true,
-            "modules": true
+            "experimentalObjectRestSpread": true
         }
     },
     "rules": {
@@ -27,7 +29,7 @@
         "indent": 2,
         "jsx-quotes": [2, "prefer-double"],
         "key-spacing": [2, { "beforeColon": false, "afterColon": true }],
-        "keyword-spacing": 2,
+        "keyword-spacing": ["error"],
         "max-depth": 0,
         "max-len": [2, 120, 4, { "ignoreComments": true, "ignoreUrls": true }],
         "max-params": 0,
@@ -51,11 +53,16 @@
         "no-shadow": 0,
         "no-trailing-spaces": 0,
         "no-undef": 2,
-        "no-unused-vars": [2, {"vars": "all", "args": "none", "varsIgnorePattern": "^[rR]eact"}],
+        "no-unused-vars": [2, {"vars": "all", "args": "none"}],
         "no-use-before-define":  [2, "nofunc"],
         "padded-blocks": [2, "never"],
         "quotes": [2, "single"],
-        "semi":  [2, "always"],
+        "react/jsx-uses-react": 2,
+        "react/jsx-uses-vars": 2,
+        "react/no-did-update-set-state": 2,
+        "react/no-direct-mutation-state": 2,
+        "react/no-is-mounted": 2,
+        "react/prefer-stateless-function": 2,
         "spaced-comment": [2, "always"],
         "strict": 0,
         "wrap-iife": [2, "inside"]

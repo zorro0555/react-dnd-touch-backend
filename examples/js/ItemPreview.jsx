@@ -36,21 +36,24 @@ function getItemStyles (currentOffset) {
     };
 }
 
-export default class ItemPreview extends React.Component {
-    render () {
-        if (!this.props.isDragging) {
-            return <li></li>;
-        }
-
-        return (
-            <div
-                className="item preview"
-                style={getItemStyles(this.props.currentOffset)}
-            >
-                {this.props.id} {this.props.name}
-            </div>
-        );
+export default function ItemPreview ({
+    id,
+    name,
+    isDragging,
+    currentOffset
+}) {
+    if (!isDragging) {
+        return <li></li>;
     }
+
+    return (
+        <div
+            className="item preview"
+            style={getItemStyles(currentOffset)}
+        >
+            {id} {name}
+        </div>
+    );
 }
 
 ItemPreview.propTypes = {

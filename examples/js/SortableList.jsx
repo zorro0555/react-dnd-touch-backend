@@ -8,24 +8,22 @@ import React from 'react';
 import DraggableItem from './DraggableItem.jsx';
 import { List } from 'immutable';
 
-export default class SortableList extends React.Component {
-    render () {
-        const items = this.props.data.toArray().map(obj => (
-            <DraggableItem
-                key={obj.get('id')}
-                id={obj.get('id')}
-                listId={this.props.id}
-                name={obj.get('name')}
-                onReorder={this.props.onReorder}
-            />
-        ));
+export default function SortableList ({ data, id, onReorder }) {
+    const items = data.toArray().map(obj => (
+        <DraggableItem
+            key={obj.get('id')}
+            id={obj.get('id')}
+            listId={id}
+            name={obj.get('name')}
+            onReorder={onReorder}
+        />
+    ));
 
-        return (
-            <ul className="list">
-                {items}
-            </ul>
-        );
-    }
+    return (
+        <ul className="list">
+            {items}
+        </ul>
+    );
 }
 
 SortableList.propTypes = {

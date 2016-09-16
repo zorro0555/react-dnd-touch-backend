@@ -285,7 +285,8 @@ export class TouchBackend {
 
         e.preventDefault();
 
-        /*const matchingTargetIds = Object.keys(this.targetNodes)
+        /*
+        const matchingTargetIds = Object.keys(this.targetNodes)
             .filter((targetId) => {
                 const boundingRect = this.targetNodes[targetId].getBoundingClientRect();
                 return clientOffset.x >= boundingRect.left &&

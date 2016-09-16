@@ -45,7 +45,7 @@ function reorder (fromObj, toObj) {
         const dropList = source.get(dropListId);
         let dropIndex = dropList.findIndex(item => item.get('id') === dropId);
 
-        if( 
+        if ( 
             dragListId === dropListId &&
             dragIndex <= dropIndex
         ) {
@@ -58,18 +58,16 @@ function reorder (fromObj, toObj) {
     render(datasource);
 }
 
-class App extends React.Component {
-    render () {
-        const lists = this.props.lists.toArray().map((list, i) => {
-            return <SortableList key={i} id={i} data={list} onReorder={reorder}/>;
-        });
-        return (
-            <div>
-                {lists}
-                <ItemPreview key="__preview" name="Item" />
-            </div>
-        );
-    }
+function App () {
+    const lists = this.props.lists.toArray().map((list, i) => {
+        return <SortableList key={i} id={i} data={list} onReorder={reorder}/>;
+    });
+    return (
+        <div>
+            {lists}
+            <ItemPreview key="__preview" name="Item" />
+        </div>
+    );
 }
 
 var DragDropApp = DragDropContext(Touch({ enableMouseEvents: true }))(App);
