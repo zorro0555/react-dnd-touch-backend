@@ -23,6 +23,16 @@ function getEventClientOffset (e) {
     }
 }
 
+const supportsPassive = (() => {
+    //simular to jQuery's test
+    let supported = false;
+    try {
+        addEventListener('test', null, Object.defineProperty({}, 'passive', {get () { supported = true; }}));
+    } catch (e) {}
+    return supported;
+})();
+
+
 const ELEMENT_NODE = 1;
 function getNodeClientOffset (node) {
     const el = node.nodeType === ELEMENT_NODE
@@ -126,14 +136,18 @@ export class TouchBackend {
     }
 
     addEventListener (subject, event, handler, capture) {
+        const options = supportsPassive ? {capture, passive: false} : capture;
+
         this.listenerTypes.forEach(function (listenerType) {
-            subject.addEventListener(eventNames[listenerType][event], handler, capture);
+            subject.addEventListener(eventNames[listenerType][event], handler, options);
         });
     }
 
     removeEventListener (subject, event, handler, capture) {
+        const options = supportsPassive ? {capture, passive: false} : capture;
+
         this.listenerTypes.forEach(function (listenerType) {
-            subject.removeEventListener(eventNames[listenerType][event], handler, capture);
+            subject.removeEventListener(eventNames[listenerType][event], handler, options);
         });
     }
 
