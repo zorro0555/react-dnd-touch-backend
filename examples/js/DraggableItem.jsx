@@ -47,7 +47,7 @@ const dropTarget = {
     }
 };
 
-export default class Item extends React.Component {
+class Item extends React.Component {
     render () {
         const className = classnames('item', {
             'is-over': this.props.isOver

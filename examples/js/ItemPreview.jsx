@@ -36,7 +36,7 @@ function getItemStyles (currentOffset) {
     };
 }
 
-export default function ItemPreview ({
+function ItemPreview ({
     id,
     name,
     isDragging,

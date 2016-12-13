@@ -58,13 +58,13 @@ function reorder (fromObj, toObj) {
     render(datasource);
 }
 
-function App () {
-    const lists = this.props.lists.toArray().map((list, i) => {
-        return <SortableList key={i} id={i} data={list} onReorder={reorder}/>;
-    });
+
+function App ({lists}) {
     return (
         <div>
-            {lists}
+            {lists.toArray().map((list, i) =>
+                <SortableList key={i} id={i} data={list} onReorder={reorder}/>
+            )}
             <ItemPreview key="__preview" name="Item" />
         </div>
     );
