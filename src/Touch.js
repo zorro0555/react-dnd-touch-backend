@@ -57,6 +57,9 @@ const eventNames = {
         start: 'touchstart',
         move: 'touchmove',
         end: 'touchend'
+    },
+    keyboard: {
+        keydown: 'keydown',
     }
 };
 
@@ -67,6 +70,7 @@ export class TouchBackend {
         options = {
             enableTouchEvents: true,
             enableMouseEvents: false,
+            enableKeyboardEvents: false,
             delayTouchStart: 0,
             delayMouseStart: 0,
             ...options
@@ -76,6 +80,7 @@ export class TouchBackend {
         this.monitor = manager.getMonitor();
         this.registry = manager.getRegistry();
 
+        this.enableKeyboardEvents = options.enableKeyboardEvents;
         this.delayTouchStart = options.delayTouchStart;
         this.delayMouseStart = options.delayMouseStart;
         this.sourceNodes = {};
@@ -94,6 +99,10 @@ export class TouchBackend {
             this.listenerTypes.push('touch');
         }
 
+        if (options.enableKeyboardEvents) {
+            this.listenerTypes.push('keyboard')
+        }
+
         this.getSourceClientOffset = this.getSourceClientOffset.bind(this);
         this.handleTopMoveStart = this.handleTopMoveStart.bind(this);
         this.handleTopMoveStartDelay = this.handleTopMoveStartDelay.bind(this);
@@ -101,6 +110,7 @@ export class TouchBackend {
         this.handleTopMoveCapture = this.handleTopMoveCapture.bind(this);
         this.handleTopMove = this.handleTopMove.bind(this);
         this.handleTopMoveEndCapture = this.handleTopMoveEndCapture.bind(this);
+        this.handleCancelOnEscape = this.handleCancelOnEscape.bind(this);
     }
 
     setup () {
@@ -111,11 +121,15 @@ export class TouchBackend {
         invariant(!this.constructor.isSetUp, 'Cannot have two Touch backends at the same time.');
         this.constructor.isSetUp = true;
 
-        this.addEventListener(window, 'start', this.getTopMoveStartHandler());
-        this.addEventListener(window, 'start', this.handleTopMoveStartCapture, true);
-        this.addEventListener(window, 'move',  this.handleTopMove);
-        this.addEventListener(window, 'move',  this.handleTopMoveCapture, true);
-        this.addEventListener(window, 'end',   this.handleTopMoveEndCapture, true);
+        this.addEventListener(window, 'start',      this.getTopMoveStartHandler());
+        this.addEventListener(window, 'start',      this.handleTopMoveStartCapture, true);
+        this.addEventListener(window, 'move',       this.handleTopMove);
+        this.addEventListener(window, 'move',       this.handleTopMoveCapture, true);
+        this.addEventListener(window, 'end',        this.handleTopMoveEndCapture, true);
+
+        if (this.enableKeyboardEvents){
+            this.addEventListener(window, 'keydown', this.handleCancelOnEscape, true);
+        }
     }
 
     teardown () {
@@ -131,6 +145,10 @@ export class TouchBackend {
         this.removeEventListener(window, 'move',  this.handleTopMoveCapture, true);
         this.removeEventListener(window, 'move',  this.handleTopMove);
         this.removeEventListener(window, 'end',   this.handleTopMoveEndCapture, true);
+
+        if (this.enableKeyboardEvents){
+            this.removeEventListener(window, 'keydown', this.handleCancelOnEscape, true);
+        }
 
         this.uninstallSourceNodeRemovalObserver();
     }
@@ -328,6 +346,15 @@ export class TouchBackend {
         this.uninstallSourceNodeRemovalObserver();
         this.actions.drop();
         this.actions.endDrag();
+    }
+
+    handleCancelOnEscape (e) {
+        if (e.key === "Escape"){
+            this._mouseClientOffset = {};
+
+            this.uninstallSourceNodeRemovalObserver();
+            this.actions.endDrag();               
+        }
     }
 
     installSourceNodeRemovalObserver (node) {
