@@ -24,7 +24,7 @@ function getEventClientOffset (e) {
 }
 
 const supportsPassive = (() => {
-    //simular to jQuery's test
+    // simular to jQuery's test
     let supported = false;
     try {
         addEventListener('test', null, Object.defineProperty({}, 'passive', {get () { supported = true; }}));
@@ -51,7 +51,8 @@ const eventNames = {
     mouse: {
         start: 'mousedown',
         move: 'mousemove',
-        end: 'mouseup'
+        end: 'mouseup',
+        contextmenu: 'contextmenu'
     },
     touch: {
         start: 'touchstart',
@@ -59,7 +60,7 @@ const eventNames = {
         end: 'touchend'
     },
     keyboard: {
-        keydown: 'keydown',
+        keydown: 'keydown'
     }
 };
 
@@ -81,6 +82,7 @@ export class TouchBackend {
         this.registry = manager.getRegistry();
 
         this.enableKeyboardEvents = options.enableKeyboardEvents;
+        this.enableMouseEvents = options.enableMouseEvents;
         this.delayTouchStart = options.delayTouchStart;
         this.delayMouseStart = options.delayMouseStart;
         this.sourceNodes = {};
@@ -127,6 +129,10 @@ export class TouchBackend {
         this.addEventListener(window, 'move',       this.handleTopMoveCapture, true);
         this.addEventListener(window, 'end',        this.handleTopMoveEndCapture, true);
 
+        if (this.enableMouseEvents) {
+            this.addEventListener(window, 'contextmenu', this.handleTopMoveEndCapture);
+        }
+
         if (this.enableKeyboardEvents){
             this.addEventListener(window, 'keydown', this.handleCancelOnEscape, true);
         }
@@ -145,6 +151,10 @@ export class TouchBackend {
         this.removeEventListener(window, 'move',  this.handleTopMoveCapture, true);
         this.removeEventListener(window, 'move',  this.handleTopMove);
         this.removeEventListener(window, 'end',   this.handleTopMoveEndCapture, true);
+
+        if (this.enableMouseEvents) {
+            this.removeEventListener(window, 'contextmenu', this.handleTopMoveEndCapture);
+        }
 
         if (this.enableKeyboardEvents){
             this.removeEventListener(window, 'keydown', this.handleCancelOnEscape, true);
@@ -349,12 +359,16 @@ export class TouchBackend {
     }
 
     handleCancelOnEscape (e) {
-        if (e.key === "Escape"){
+        if (e.key === 'Escape'){
             this._mouseClientOffset = {};
 
             this.uninstallSourceNodeRemovalObserver();
-            this.actions.endDrag();               
+            this.actions.endDrag();
         }
+    }
+
+    handleOnContextMenu () {
+        this.moveStartSourceIds = null;
     }
 
     installSourceNodeRemovalObserver (node) {
