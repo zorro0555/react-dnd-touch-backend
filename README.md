@@ -5,6 +5,7 @@
 [![npm version](https://badge.fury.io/js/react-dnd-touch-backend.svg)](http://badge.fury.io/js/react-dnd-touch-backend)
 [![Dependency Status](https://david-dm.org/yahoo/react-dnd-touch-backend.svg)](https://david-dm.org/yahoo/react-dnd-touch-backend)
 [![devDependency Status](https://david-dm.org/yahoo/react-dnd-touch-backend/dev-status.svg)](https://david-dm.org/yahoo/react-dnd-touch-backend#info=devDependencies)
+![gzip size](http://img.badgesize.io/https://npmcdn.com/react-dnd-touch-backend?compression=gzip)
 
 Touch Backend for [react-dnd](https://github.com/gaearon/react-dnd)
 
