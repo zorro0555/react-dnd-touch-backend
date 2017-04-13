@@ -89,6 +89,7 @@ export class TouchBackend {
         this.sourceNodeOptions = {};
         this.sourcePreviewNodes = {};
         this.sourcePreviewNodeOptions = {};
+        this.targetNodes = {};
         this.targetNodeOptions = {};
         this.listenerTypes = [];
         this._mouseClientOffset = {};
@@ -234,9 +235,10 @@ export class TouchBackend {
          * Attaching the event listener to the body so that touchmove will work while dragging over multiple target elements.
          */
         this.addEventListener(document.querySelector('body'), 'move', handleMove);
-
+        this.targetNodes[targetId] = node;
 
         return () => {
+            delete this.targetNodes[targetId];
             this.removeEventListener(document.querySelector('body'), 'move', handleMove);
         };
     }
@@ -327,18 +329,28 @@ export class TouchBackend {
 
         e.preventDefault();
 
-        /*
-        const matchingTargetIds = Object.keys(this.targetNodes)
-            .filter((targetId) => {
-                const boundingRect = this.targetNodes[targetId].getBoundingClientRect();
-                return clientOffset.x >= boundingRect.left &&
-                clientOffset.x <= boundingRect.right &&
-                clientOffset.y >= boundingRect.top &&
-                clientOffset.y <= boundingRect.bottom;
-            });
-        */
+        // Get the node elements of the hovered DropTargets
+        const dragOverTargetNodes = dragOverTargetIds.map(key => this.targetNodes[key]);
+        // Get the a ordered list of nodes that are touched by
+        let elementsAtPoint = document.elementsFromPoint(clientOffset.x, clientOffset.y);
+        let orderedDragOverTargetIds = elementsAtPoint
+          // Filter off nodes that arent a hovered DropTargets nodes
+          .filter(node => dragOverTargetNodes.indexOf(node) > -1)
+          // Map back the nodes elements to targetIds
+          .map(node => {
+            for (let targetId in this.targetNodes) {
+              if (node === this.targetNodes[targetId])
+                return targetId;
+            }
+            return null;
+          })
+          // Filter off possible null rows
+          .filter(node => !!node);
 
-        this.actions.hover(dragOverTargetIds, {
+        // Reverse order because dnd-core reverse it before calling the DropTarget drop methods
+        orderedDragOverTargetIds.reverse();
+
+        this.actions.hover(orderedDragOverTargetIds, {
             clientOffset: clientOffset
         });
     }

@@ -34,6 +34,23 @@
                 width: 300px;
                 height: 300px;
             }
+            .nested {
+                display: flex;
+                background: #ffbbbb;
+                opacity: .7;
+                width: 500px;
+                max-width: 40%;
+                max-height: 50%;
+            }
+            .nested>.nested {
+              background: #bbffbb;
+            }
+            .nested>.nested>.nested {
+              background: #bbbbff;
+            }
+            .hovered {
+              opacity: 1 !important;
+            }
             .nested-child {
                 padding: 10px;
                 margin: 50px 10px;

@@ -5,7 +5,8 @@ import DropTarget from 'react-dnd/lib/DropTarget';
 
 const dragTarget = {
     drop(props, monitor, component) {
-        console.log('dropped on target');
+        const droppedItem = monitor.getItem();
+        console.log('dropped on target', droppedItem);
     }
 };
 

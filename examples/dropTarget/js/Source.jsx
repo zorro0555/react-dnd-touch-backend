@@ -28,12 +28,14 @@ class Source extends Component {
             <div className="source">
                 <DragPreview {...this.props} />
                 Drag me!
+                <pre>{this.props.value}</pre>
             </div>
         );
     }
 }
 
 Source.PropTypes = {
+    value: PropTypes.number.isRequired,
     isDragging: PropTypes.bool.isRequired,
     connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired
