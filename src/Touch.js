@@ -23,6 +23,34 @@ function getEventClientOffset (e) {
     }
 }
 
+// Polyfill for document.elementsFromPoint
+const elementsFromPoint = (document.elementsFromPoint || function (x,y) {
+    var elements = [], previousPointerEvents = [], current, i, d;
+
+    // get all elements via elementFromPoint, and remove them from hit-testing in order
+    while ((current = document.elementFromPoint(x,y)) && elements.indexOf(current) === -1 && current !== null) {
+
+      // push the element and its current style
+    	elements.push(current);
+    	previousPointerEvents.push({
+          value: current.style.getPropertyValue('pointer-events'),
+          priority: current.style.getPropertyPriority('pointer-events')
+      });
+
+      // add "pointer-events: none", to get to the underlying element
+    	current.style.setProperty('pointer-events', 'none', 'important');
+    }
+
+    // restore the previous pointer-events values
+    for(i = previousPointerEvents.length; d=previousPointerEvents[--i]; ) {
+    	elements[i].style.setProperty('pointer-events', d.value ? d.value: '', d.priority);
+    }
+
+    // return our results
+    return elements;
+
+}).bind(document);
+
 const supportsPassive = (() => {
     // simular to jQuery's test
     let supported = false;
@@ -332,7 +360,7 @@ export class TouchBackend {
         // Get the node elements of the hovered DropTargets
         const dragOverTargetNodes = dragOverTargetIds.map(key => this.targetNodes[key]);
         // Get the a ordered list of nodes that are touched by
-        let elementsAtPoint = document.elementsFromPoint(clientOffset.x, clientOffset.y);
+        let elementsAtPoint = elementsFromPoint(clientOffset.x, clientOffset.y);
         let orderedDragOverTargetIds = elementsAtPoint
           // Filter off nodes that arent a hovered DropTargets nodes
           .filter(node => dragOverTargetNodes.indexOf(node) > -1)

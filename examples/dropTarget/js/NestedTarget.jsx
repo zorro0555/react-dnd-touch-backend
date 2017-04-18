@@ -9,8 +9,9 @@ const dragNestedTarget = {
 
         if (!droppedItem) droppedItem = monitor.getItem();
 
-        droppedItem = Object.assign({}, droppedItem);
-        droppedItem.value = props.changeFunction(droppedItem.value);
+        droppedItem = {
+          value: props.changeFunction(droppedItem.value)
+        };
 
         console.log(props.message, droppedItem);
 
