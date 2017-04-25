@@ -24,7 +24,7 @@ function getEventClientOffset (e) {
 }
 
 // Polyfill for document.elementsFromPoint
-const elementsFromPoint = (document.elementsFromPoint || function (x,y) {
+const elementsFromPoint = ((document && document.elementsFromPoint) || function (x,y) {
     var elements = [], previousPointerEvents = [], current, i, d;
 
     // get all elements via elementFromPoint, and remove them from hit-testing in order
