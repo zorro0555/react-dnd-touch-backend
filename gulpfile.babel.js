@@ -5,9 +5,17 @@
 import gulp from 'gulp';
 import connect from 'gulp-connect';
 import del from 'del';
+import fs from 'fs';
 import babel from 'gulp-babel';
+import changelog from 'gulp-changelog';
 import { default as js, dist } from './tasks/browserify';
 
+gulp.task('changelog', function(cb){
+  changelog(require('./package.json')).then(function(stream) {
+    stream.pipe(gulp.dest('./')).on('end',cb);
+  });
+});
+ 
 gulp.task('clean', () => {
     del.sync(['dist']);
     del.sync(['examples/*.browserified.js']);

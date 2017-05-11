@@ -44,6 +44,7 @@
     "eslint-plugin-react": "^6.2.2",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.2",
+    "gulp-changelog": "^1.0.0",
     "gulp-connect": "^5.0.0",
     "gulp-util": "^3.0.6",
     "immutable": "^3.7.5",
