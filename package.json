@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "eslint --quiet --cache . --ext .js --ext .jsx",
     "prepublish": "gulp dist",
-    "test": "gulp clean lint"
+    "test": "gulp clean lint",
+    "dev": "gulp dev"
   },
   "repository": {
     "type": "git",

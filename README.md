@@ -39,7 +39,7 @@ DragDropContext(TouchBackend({ enableMouseEvents: true }));
 ## Examples
 The `examples` folder has a sample integration. In order to build it, run:
 ```bash
-npm i && gulp dev
+npm i && npm run dev
 ```
 Then navigate to `localhost:7789` or `(IP Address):7789` in your mobile browser to access the example.
 Code licensed under the MIT license. See LICENSE file for terms.
