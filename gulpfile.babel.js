@@ -12,7 +12,7 @@ import { default as js, dist } from './tasks/browserify';
 
 gulp.task('changelog', function(cb){
   changelog(require('./package.json')).then(function(stream) {
-    stream.pipe(gulp.dest('./')).on('end',cb);
+    stream.pipe(gulp.dest('./', {number: 100})).on('end',cb);
   });
 });
  
