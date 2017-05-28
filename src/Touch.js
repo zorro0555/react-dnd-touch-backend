@@ -49,7 +49,7 @@ const elementsFromPoint = ((typeof document !== 'undefined' && document.elements
     // return our results
     return elements;
 
-}).bind(typeof document !== "undefined" ? document : null);
+}).bind(typeof document !== 'undefined' ? document : null);
 
 const supportsPassive = (() => {
     // simular to jQuery's test
