@@ -1,3 +1,20 @@
+0.3.12 / 2017-06-29
+===================
+
+  * Fallback to ms prefixed elementsFromPoint
+
+0.3.11 / 2017-05-28
+===================
+
+  * Merge pull request [#70]
+  (https://github.com/yahoo/react-dnd-touch-backend/issues/70) from egorvoronov/patch-1
+    document is not defined fix for server side rendering
+  * [FIXED] single quotes instead
+  * [FIXED] undefined in quotes
+  * [FIXED] document is not defined fix for server side rendering
+  * Add CHANGELOG and version tags
+  * Allows usage without global gulp install ([#66](https://github.com/yahoo/react-dnd-touch-backend/issues/66))
+
 0.3.10 / 2017-05-11
 ===================
 
