@@ -25,7 +25,7 @@ function getEventClientOffset (e) {
 
 // Polyfill for document.elementsFromPoint
 const elementsFromPoint = ((typeof document !== 'undefined' && document.elementsFromPoint) || function (x,y) {
-    
+
     if (document.msElementsFromPoint) {
         // msElementsFromPoint is much faster but returns a node-list, so convert it to an array
         return Array.prototype.slice.call(document.msElementsFromPoint(x, y), 0);
@@ -202,7 +202,11 @@ export class TouchBackend {
         const options = supportsPassive ? {capture, passive: false} : capture;
 
         this.listenerTypes.forEach(function (listenerType) {
-            subject.addEventListener(eventNames[listenerType][event], handler, options);
+            const evt = eventNames[listenerType][event];
+
+            if (evt) {
+                subject.addEventListener(evt, handler, options);
+            }
         });
     }
 
@@ -210,7 +214,11 @@ export class TouchBackend {
         const options = supportsPassive ? {capture, passive: false} : capture;
 
         this.listenerTypes.forEach(function (listenerType) {
-            subject.removeEventListener(eventNames[listenerType][event], handler, options);
+            const evt = eventNames[listenerType][event];
+
+            if (evt) {
+                subject.removeEventListener(evt, handler, options);
+            }
         });
     }
 
