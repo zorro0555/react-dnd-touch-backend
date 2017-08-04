@@ -315,6 +315,7 @@ export class TouchBackend {
         if (clientOffset) {
             this._mouseClientOffset = clientOffset;
         }
+        this.waitingForDelay = false
     }
 
     handleTopMoveStartDelay (e) {
@@ -322,6 +323,7 @@ export class TouchBackend {
             ? this.delayTouchStart
             : this.delayMouseStart;
         this.timeout = setTimeout(this.handleTopMoveStart.bind(this, e), delay);
+        this.waitingForDelay = true
     }
 
     handleTopMoveCapture (e) {
@@ -334,6 +336,9 @@ export class TouchBackend {
 
     handleTopMove (e) {
         clearTimeout(this.timeout);
+        if (this.waitingForDelay) {
+            return;
+        }
 
         const { moveStartSourceIds, dragOverTargetIds } = this;
         const clientOffset = getEventClientOffset(e);
