@@ -5,7 +5,7 @@
   "main": "dist/Touch.js",
   "scripts": {
     "lint": "eslint --quiet --cache . --ext .js --ext .jsx",
-    "prepublish": "gulp dist",
+    "prepublishOnly": "gulp dist",
     "test": "gulp clean lint",
     "dev": "gulp dev"
   },
