@@ -386,7 +386,7 @@ export class TouchBackend {
             let currentNode = elementsAtPoint[nodeId];
             elementsAtPointExtended.push(currentNode);
             // Is currentNode an SVG element
-            while(currentNode.ownerSVGElement){
+            while(currentNode && currentNode.ownerSVGElement){
                 currentNode = currentNode.parentElement;
                 if( !elementsAtPointExtended.includes(currentNode) ) elementsAtPointExtended.push(currentNode)
             }
