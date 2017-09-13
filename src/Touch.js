@@ -28,7 +28,8 @@ const elementsFromPoint = ((typeof document !== 'undefined' && document.elements
 
     if (document.msElementsFromPoint) {
         // msElementsFromPoint is much faster but returns a node-list, so convert it to an array
-        return Array.prototype.slice.call(document.msElementsFromPoint(x, y), 0);
+        const msElements = document.msElementsFromPoint(x, y);
+        return msElements && Array.prototype.slice.call(msElements, 0);
     }
 
     var elements = [], previousPointerEvents = [], current, i, d;
