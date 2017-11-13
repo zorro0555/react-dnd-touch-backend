@@ -5,6 +5,7 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import DragSource from 'react-dnd/lib/DragSource';
 import DropTarget from 'react-dnd/lib/DropTarget';
 
@@ -71,17 +72,17 @@ class Item extends React.Component {
 }
 
 Item.PropTypes = {
-    id: React.PropTypes.number.isRequired,
-    listId: React.PropTypes.number.isRequired,
-    text: React.PropTypes.string,
+    id: PropTypes.number.isRequired,
+    listId: PropTypes.number.isRequired,
+    text: PropTypes.string,
 
     // react-dnd props
-    connectDragSource: React.PropTypes.func,
-    connectDropTarget: React.PropTypes.func,
-    connectDragPreview: React.PropTypes.func,
-    onReorder: React.PropTypes.func,
-    isDragging: React.PropTypes.bool,
-    isOver: React.PropTypes.bool
+    connectDragSource: PropTypes.func,
+    connectDropTarget: PropTypes.func,
+    connectDragPreview: PropTypes.func,
+    onReorder: PropTypes.func,
+    isDragging: PropTypes.bool,
+    isOver: PropTypes.bool
 };
 
 export default DragSource(

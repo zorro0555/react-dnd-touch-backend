@@ -5,6 +5,7 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import DragLayer from 'react-dnd/lib/DragLayer';
 
 function collect (monitor) {
@@ -57,13 +58,13 @@ function ItemPreview ({
 }
 
 ItemPreview.propTypes = {
-    id: React.PropTypes.string,
-    name: React.PropTypes.string,
-    currentOffset: React.PropTypes.shape({
-        x: React.PropTypes.number,
-        y: React.PropTypes.number
+    id: PropTypes.string,
+    name: PropTypes.string,
+    currentOffset: PropTypes.shape({
+        x: PropTypes.number,
+        y: PropTypes.number
     }),
-    isDragging: React.PropTypes.bool
+    isDragging: PropTypes.bool
 };
 
 export default DragLayer(collect)(ItemPreview);

@@ -5,6 +5,7 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import DraggableItem from './DraggableItem.jsx';
 import { List } from 'immutable';
 
@@ -27,7 +28,7 @@ export default function SortableList ({ data, id, onReorder }) {
 }
 
 SortableList.propTypes = {
-    id: React.PropTypes.number.isRequired,
-    data: React.PropTypes.instanceOf(List).isRequired,
-    onReorder: React.PropTypes.func
+    id: PropTypes.number.isRequired,
+    data: PropTypes.instanceOf(List).isRequired,
+    onReorder: PropTypes.func
 };
