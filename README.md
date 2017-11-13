@@ -23,6 +23,23 @@ var YourApp = React.createClass(
 
 module.exports = DragDropContext(TouchBackend)(YourApp);
 ```
+
+### Options
+
+You have the following options available to you, which you can pass in like so:
+
+```js
+DragDropContext(TouchBackend(options))
+```
+
+Options include:
+
+- enableTouchEvents
+- enableMouseEvents
+- enableKeyboardEvents
+- delayTouchStart
+- delayMouseStart
+
 ## Tips
 ### Drag Preview
 Since native Drag-n-Drop is not currently supported in touch devices. A custom [DragPreview](https://gaearon.github.io/react-dnd/docs-drag-layer.html) is required. Check out the [example](https://github.com/yahoo/react-dnd-touch-backend/blob/master/examples/js/ItemPreview.jsx) for a sample implementation.
