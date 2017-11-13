@@ -249,6 +249,10 @@ export class TouchBackend {
         const handleMove = (e) => {
             let coords;
 
+            if (!this.monitor.isDragging()) {
+                return;
+            }
+
             /**
              * Grab the coordinates for the current mouse/touch position
              */
