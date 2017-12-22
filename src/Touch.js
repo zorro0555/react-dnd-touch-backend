@@ -456,7 +456,8 @@ export class TouchBackend {
             return null;
           })
           // Filter off possible null rows
-          .filter(node => !!node);
+          .filter(node => !!node)
+          .filter((id, index, ids) => ids.indexOf(id) === index);
 
         // Reverse order because dnd-core reverse it before calling the DropTarget drop methods
         orderedDragOverTargetIds.reverse();
