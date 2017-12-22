@@ -44,7 +44,7 @@ const MouseButton = {
 function eventShouldStartDrag(e) {
     // For touch events, button will be undefined. If e.button is defined,
     // then it should be MouseButton.Left.
-    return e.button === undefined || e.button !== MouseButton.Left;
+    return e.button === undefined || e.button === MouseButton.Left;
 }
 
 /**
