@@ -339,7 +339,11 @@ export class TouchBackend {
     }
 
     handleMoveStart (sourceId) {
-        this.moveStartSourceIds.unshift(sourceId);
+        // Just because we received an event doesn't necessarily mean we need to collect drag sources.
+        // We only collect start collecting drag sources on touch and left mouse events.
+        if (Array.isArray(this.moveStartSourceIds)) {
+            this.moveStartSourceIds.unshift(sourceId);
+        }
     }
 
     getTopMoveStartHandler () {
