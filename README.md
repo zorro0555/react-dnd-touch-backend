@@ -39,6 +39,8 @@ Options include:
 - enableKeyboardEvents
 - delayTouchStart
 - delayMouseStart
+- touchSlop
+- ignoreContextMenu
 
 ## Tips
 ### Drag Preview
@@ -52,6 +54,22 @@ You can enable capturing mouse events by configuring your TouchBackend as follow
 DragDropContext(TouchBackend({ enableMouseEvents: true }));
 ```
 **NOTE*: This is buggy due to the difference in `touchstart/touchend` event propagation compared to `mousedown/mouseup/click`. I highly recommend that you use [react-dnd-html5-backend](https://github.com/gaearon/react-dnd-html5-backend) instead for a more performant native HTML5 drag capability.**
+
+### Other options
+**touchSlop**
+
+* Specifies the pixel distance moved before a drag is signaled.
+* Default: 0
+```js
+DragDropContext(TouchBackend({ touchSlop: 20 }));
+```
+**ignoreContextMenu**
+
+* If true, prevents the `contextmenu` event from canceling a drag.
+* Default: false
+```js
+DragDropContext(TouchBackend({ ignoreContextMenu: true }));
+```
 
 ## Examples
 The `examples` folder has a sample integration. In order to build it, run:
