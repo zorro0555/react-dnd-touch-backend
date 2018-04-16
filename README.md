@@ -41,6 +41,7 @@ Options include:
 - delayMouseStart
 - touchSlop
 - ignoreContextMenu
+- scrollAngleRanges
 
 ## Tips
 ### Drag Preview
@@ -70,6 +71,21 @@ DragDropContext(TouchBackend({ touchSlop: 20 }));
 ```js
 DragDropContext(TouchBackend({ ignoreContextMenu: true }));
 ```
+
+**scrollAngleRanges**
+
+* Specifies ranges of angles in degrees that drag events should be ignored. This is useful when you want to allow the 
+user to scroll in a particular direction instead of dragging. Degrees move clockwise, 0/360 pointing to the 
+left. 
+* Default: undefined
+```js
+// allow vertical scrolling
+DragDropContext(TouchBackend({ scrollAngleRanges: [{ start: 30, end: 150 }, { start: 210, end: 330 }] }));
+
+// allow horizontal scrolling
+DragDropContext(TouchBackend({ scrollAngleRanges: [{ start: 300 }, { end: 60 }, { start: 120, end: 240 }] }));
+```
+
 
 ## Examples
 The `examples` folder has a sample integration. In order to build it, run:
