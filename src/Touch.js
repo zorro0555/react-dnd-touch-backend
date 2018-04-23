@@ -147,6 +147,7 @@ export class TouchBackend {
             delayTouchStart: 0,
             delayMouseStart: 0,
             touchSlop: 0,
+            scrollAngleRanges: undefined,
             ...options
         };
 
@@ -160,6 +161,7 @@ export class TouchBackend {
         this.delayMouseStart = options.delayMouseStart;
         this.ignoreContextMenu = options.ignoreContextMenu;
         this.touchSlop = options.touchSlop;
+        this.scrollAngleRanges = options.scrollAngleRanges;
         this.sourceNodes = {};
         this.sourceNodeOptions = {};
         this.sourcePreviewNodes = {};
@@ -168,6 +170,7 @@ export class TouchBackend {
         this.targetNodeOptions = {};
         this.listenerTypes = [];
         this._mouseClientOffset = {};
+        this._isScrolling = false;
 
         if (options.enableMouseEvents) {
             this.listenerTypes.push('mouse');
@@ -408,6 +411,14 @@ export class TouchBackend {
             return;
         }
 
+        // If the touch move started as a scroll, or is is between the scroll angles
+        if (this._isScrolling || (!this.monitor.isDragging() &&
+            inAngleRanges(this._mouseClientOffset.x, this._mouseClientOffset.y, clientOffset.x, clientOffset.y,
+                this.scrollAngleRanges))) {
+            this._isScrolling = true;
+            return;
+        }
+
         // If we're not dragging and we've moved a little, that counts as a drag start
         if (
             !this.monitor.isDragging() &&
@@ -472,6 +483,8 @@ export class TouchBackend {
     }
 
     handleTopMoveEndCapture (e) {
+        this._isScrolling = false;
+
         if (!eventShouldEndDrag(e)) {
             return;
         }
@@ -554,4 +567,23 @@ export default function createTouchBackend (optionsOrManager = {}) {
 
 function distance(x1, y1, x2, y2) {
     return Math.sqrt(Math.pow(Math.abs(x2 - x1), 2) + Math.pow(Math.abs(y2 - y1), 2));
+}
+
+function inAngleRanges(x1, y1, x2, y2, angleRanges) {
+    if (angleRanges == null) {
+        return false;
+    }
+
+    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI + 180;
+
+    for (let i = 0; i < angleRanges.length; ++i) {
+        if (
+            (angleRanges[i].start == null || angle >= angleRanges[i].start) &&
+            (angleRanges[i].end == null || angle <= angleRanges[i].end)
+        ) {
+            return true;
+        }
+    }
+
+    return false;
 }
